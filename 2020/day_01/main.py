@@ -12,6 +12,6 @@ while len(input_lines) > 1:
 
         for prev_val in previous_values:
             if prev_val + intified_val + first_val == 2020:
-                print(intified_val, prev_val, first_val)
-                print(intified_val * prev_val * first_val)
+                print(f"Values found: {intified_val, prev_val, first_val}")
+                print(f"Computed value: {intified_val * prev_val * first_val}")
 
