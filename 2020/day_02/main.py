@@ -6,26 +6,32 @@ input_lines = input.readlines()
 def validate_password(policy: str, password: str) -> bool:
     # Parse the policy
     scoped_char: str = policy.split(" ")[1]
-    min_max_value: str = policy.split(" ")[0]
-    min_value: int = int(min_max_value.split("-")[0])
-    max_value: int = int(min_max_value.split("-")[1])
 
-    # print("Validating...")
-    # print(
-    #     f"character: {scoped_char}, min: {min_value}, max: {max_value}, password: {password}"
-    # )
+    positioning_values: str = policy.split(" ")[0]
+    first_position: int = int(positioning_values.split("-")[0]) - 1
+    second_position: int = int(positioning_values.split("-")[1]) - 1
+
+    print("Validating...")
+    print(
+        f"character: {scoped_char}, first: {first_position}, second: {second_position}, password: {password}"
+    )
 
     # Begin comparison
-    count: int = 0
-    for char in password:
-        if char == scoped_char:
-            count += 1
+    password_chars = [char for char in password]
+    char_first_position: str = password_chars[first_position]
+    char_second_position: str = password_chars[second_position]
+    print(f"1st char: {char_first_position}, 2nd char: {char_second_position}")
+    print(f"1st compare: '{char_first_position}' : '{scoped_char}'")
+    print(f"2nd compare: '{char_second_position}' : '{scoped_char}'")
 
-    if count < min_value or count > max_value:
-        # Failed
-        return False
+    if (
+        char_first_position == scoped_char and not char_second_position == scoped_char
+    ) or (
+        char_second_position == scoped_char and not char_first_position == scoped_char
+    ):
+        return True
+    return False
 
-    return True
 
 
 good_password_count: int = 0
@@ -35,10 +41,10 @@ for line in input_lines:
     policy: str = original_line[0]
     password: str = original_line[1].strip()
     test_decision: bool = validate_password(policy, password)
-    # print(f"Test decision: {test_decision}")
+    print(f"Test decision: {test_decision}")
 
     if test_decision:
         good_password_count += 1
 
 print(f"Number of passwords tested: {len(input_lines)}")
-print(f"Number of passwords failed: {good_password_count}")
+print(f"Number of passwords valid: {good_password_count}")
