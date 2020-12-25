@@ -41,7 +41,7 @@ def is_map_final(
     map: List[str], map_dimensions: Tuple[int, int], path: Tuple[int, int]
 ) -> Tuple[bool, int]:
     x_path = path[0]
-    y_path = path[1]
+    y_path = path[1]  # we don't use this yet, maybe we will in the future?
     (map_width, map_height) = map_dimensions
 
     counter = 0
@@ -59,7 +59,7 @@ def is_map_final(
     return (
         True,
         0,
-    )  # We don't have copied to make
+    )  # We don't have copies to make
 
 
 def extend_map_for_path(tree_map_list: List[str], path: Tuple[int, int]) -> List[str]:
@@ -110,4 +110,3 @@ path_to_traverse = (3, 1)
 new_map = extend_map_for_path(tree_map_list, path_to_traverse)
 determine_collisions_for_map(new_map, path_to_traverse)
 
-# print(calculate_dimensions(tree_map_list))
