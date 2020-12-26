@@ -1,5 +1,5 @@
 import math
-from typing import Tuple
+from typing import List, Tuple
 
 
 def binary_seat_search(
@@ -7,7 +7,7 @@ def binary_seat_search(
 ) -> int:
     """Search for the correct value given the charset and the upper/lower bounds
 
-    :param charset: Characters that define when to modify upper/lower bound. Define lower flag first, then upper
+    :param charset: Character flags that define when to modify upper/lower bound. Define upper flag first, then lower
     :type charset: Tuple[str, str]
     :param lower: Lower bound to start from (typically 0)
     :type lower: int
@@ -34,13 +34,22 @@ def binary_seat_search(
     return lower
 
 
-def parse_value_from_pass(
-    boarding_pass_portion: str, upper_bound: int, directions: Tuple[str, str]
-) -> int:
-    value: int = 0
-    value = binary_seat_search(directions, boarding_pass_portion, upper_bound)
+def compute_your_seat(seat_list: List[int]):
+    seat_list = sorted(seat_list)
 
-    return value
+    # Build the theoretical list
+    # NOTE: I'm assuming that the first and last values are legit, possible bug for future me?
+    lower = seat_list[0]
+    upper = seat_list[-1]
+    compare_seat_list = list(range(lower, upper))
+
+    # Build sets for comparison purposes
+    original_set = set(seat_list)
+    compare_set = set(compare_seat_list)
+
+    # Diff the sets, print what's left
+    remaining_seats = compare_set.difference(original_set)
+    print(remaining_seats)
 
 
 with open("2020/day_05/input.txt", "r") as file:
@@ -48,21 +57,20 @@ with open("2020/day_05/input.txt", "r") as file:
     boarding_passes = boarding_passes_to_parse.splitlines()
 
     highest_id = 0
+    seat_list: List[int] = []
+
     for boarding_pass in boarding_passes:
         row_portion = boarding_pass[:7]
-        row = parse_value_from_pass(row_portion, upper_bound=127, directions=("F", "B"))
+        row = binary_seat_search(("F", "B"), row_portion, upper=127)
 
         column_portion = boarding_pass[-3:]
-        column = parse_value_from_pass(
-            column_portion, upper_bound=8, directions=("L", "R")
-        )
+        column = binary_seat_search(("L", "R"), column_portion, upper=7)
 
         seat_id = row * 8 + column
         if seat_id > highest_id:
             highest_id = seat_id
 
-        print(
-            f"For {boarding_pass} -> {row_portion}: {row}, {column_portion}: {column} id: {seat_id}"
-        )
+        seat_list.append(seat_id)
 
     print(f"Highest seat id: {highest_id}")
+    compute_your_seat(seat_list)
