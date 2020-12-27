@@ -97,7 +97,7 @@ def is_field_value_valid(field: str, value: str) -> bool:
     return True
 
 
-with open("2020/day_04/input.txt", "r") as file:
+with open("./input.txt", "r") as file:
     passports_to_validate = file.read()
 
     # Split out the passports based on newlines

@@ -1,6 +1,5 @@
-input = open("2020/day_02/input.txt")
+input = open("./input.txt")
 input_lines = input.readlines()
-# input_lines = ["1-3 a: abcde", "1-3 b: cdefg", "2-9 c: ccccccccc"]
 
 
 def validate_password(policy: str, password: str) -> bool:
@@ -31,7 +30,6 @@ def validate_password(policy: str, password: str) -> bool:
     ):
         return True
     return False
-
 
 
 good_password_count: int = 0

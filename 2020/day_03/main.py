@@ -83,7 +83,7 @@ def determine_collisions_for_map(valid_map: List[str], path: Tuple[int, int]) ->
 
 
 # Do the things
-tree_map = open("2020/day_03/input.txt", "r")
+tree_map = open("./input.txt", "r")
 tree_map_list = [line.strip() for line in tree_map.readlines()]
 
 paths_to_traverse = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]

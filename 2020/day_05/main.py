@@ -52,7 +52,7 @@ def compute_your_seat(seat_list: List[int]):
     print(remaining_seats)
 
 
-with open("2020/day_05/input.txt", "r") as file:
+with open("./input.txt", "r") as file:
     boarding_passes_to_parse = file.read()
     boarding_passes = boarding_passes_to_parse.splitlines()
 

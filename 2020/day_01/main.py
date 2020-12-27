@@ -1,5 +1,4 @@
-input = open("2020/src/input.txt", "r")
-# input_lines = [1721, 979, 366, 299, 675, 1456]
+input = open("./input.txt", "r")
 input_lines = sorted(input.readlines())
 previous_values = []
 
