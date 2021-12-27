@@ -1,3 +1,4 @@
+import std/math
 import std/strformat
 import strutils
 
@@ -28,5 +29,41 @@ proc parseInput(input: seq[int]) =
 
     echo fmt"There were '{count_increases}' increases."
 
-parseInput(readInput())
+proc parseSlidingInput(input: seq[int]) =
+    var
+        current_iteration = 0
+        deconstructed_measures: seq[seq[int]]
 
+    for i in input:
+        var
+            beginning = current_iteration
+            ending = block:
+                if len(input) > current_iteration + 2:
+                    current_iteration + 2
+                else: continue # just skip these last iterations
+
+        deconstructed_measures.add(input[beginning..ending])
+        current_iteration += 1
+
+    var
+        last_sum = 0
+        count_increases = 0
+    for idx, measures in deconstructed_measures:
+        if idx == 0: # skip first iteration
+            echo fmt"{idx} is the starting iteration."
+            continue
+
+        var current_sum = sum(measures)
+        if current_sum > last_sum:
+            echo fmt"{idx}: {current_sum} is greater than {last_sum}"
+            count_increases += 1
+        else:
+            echo fmt"{idx}: {current_sum} is lower than {last_sum}"
+        last_sum = current_sum
+
+    echo fmt"There were '{count_increases}' increases."
+
+
+
+parseInput(readInput())
+parseSlidingInput(readInput())
