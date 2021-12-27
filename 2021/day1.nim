@@ -15,7 +15,6 @@ proc readInput(): seq[int] =
 
     return res
 
-
 proc parseInput(input: seq[int]) =
     for idx, val in input:
         if idx == 0: # skip first iteration
@@ -62,8 +61,6 @@ proc parseSlidingInput(input: seq[int]) =
         last_sum = current_sum
 
     echo fmt"There were '{count_increases}' increases."
-
-
 
 parseInput(readInput())
 parseSlidingInput(readInput())
