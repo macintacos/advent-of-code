@@ -30,56 +30,81 @@ def puzzle_input(is_test=False) -> list[str]:
     return input
 
 
-def transpose_strings(binaries: list[str]) -> list[str]:
+def transpose_strings(binaries: list[str], pos: int) -> list[str]:
     """Gets a list of strings and returns a transposed version of it."""
     transposed_strings: list[str] = []
 
-    for i in range(len(binaries[0])):
-        new_binary: str = ""
-        for j in range(len(binaries)):
-            if binaries[j][i] == "\n":
-                continue  # skip the newline in the input
-            new_binary += binaries[j][i]
-
-        if new_binary == "":
+    new_binary: str = ""
+    for j in range(len(binaries)):
+        if binaries[j][pos] == "\n":
             continue  # skip the newline in the input
+        new_binary += binaries[j][pos]
 
+    if new_binary != "":
         transposed_strings.append(new_binary)
 
     return transposed_strings
 
 
+def get_rating(input: list[str], rating_type: str) -> str:  # noqa
+    rating = ""
+    print(f"{ len(input) = }")
+
+    for pos in range(len(input)):
+        print(f"--- NEW ITERATION FOR: {rating_type} ---")
+        if len(input) == 2:
+            print(f"{sorted(input) = }")
+            rating = sorted(input)[-1] if rating_type == "oxygen" else sorted(input)[0]
+            break
+        else:
+            print(f"{pos = }")
+            current_bit = transpose_strings(input, pos)
+            print(f"{current_bit = }")
+            counter = Counter(current_bit[0]).most_common()
+            print(f"{counter = }")
+
+            if counter[0][1] == counter[1][1]:
+                significant_bit = "1" if rating_type == "oxygen" else "0"
+            else:
+                significant_bit = (
+                    counter[0][0] if rating_type == "oxygen" else counter[1][0]
+                )
+            print(f"{significant_bit = }, {pos = }")
+            print(f"Starting with: {input = }")
+
+            new_input = []
+            for idx, val in enumerate(input):
+                print(f"{idx = }, {val = }")
+                if val[pos] == significant_bit:
+                    print(
+                        f"Found '{val}', going to keep because "
+                        f"position '{pos}' matches '{significant_bit}'"
+                    )
+                    new_input.append(input[idx])
+
+            input = new_input
+
+        print(f"{input = }")
+        if len(input) == 1:
+            break
+
+    print()
+    return rating
+
+
 def main() -> None:
     """Does the main things."""
-    input: list[str] = puzzle_input(is_test=True)
+    input: list[str] = puzzle_input(is_test=False)
 
-    gamma_rate: str = ""
-    epsilon_rate: str = ""
-    oxygen_gen_rating: int = 0
-    co2_scrubber_rating: int = 0
-    life_support_rating: int = oxygen_gen_rating * co2_scrubber_rating
+    oxygen_gen_rating: str = get_rating(input.copy(), "oxygen")
+    co2_scrubber_rating: str = get_rating(input.copy(), "co2")
+    life_support_rating: int = int(oxygen_gen_rating, 2) * int(co2_scrubber_rating, 2)
 
-    input_transposed: list[str] = transpose_strings(input)
-    print(f"{len(input_transposed) = }")
-    print(f"{input_transposed = }")
-
-    count = 0
-    for binary in input_transposed:
-        counter = Counter(binary).most_common()
-
-        # To handle unsanitized
-
-        print(f"{counter}")
-        gamma_rate += counter[0][0]  # most significant
-        epsilon_rate += counter[1][0]  # least significant
-        print(f"{count = }")
-        count += 1
-
-    print(f"{gamma_rate = }")
-    print(f"{int(gamma_rate, 2) = }")
-    print(f"{epsilon_rate = }")
-    print(f"{int(epsilon_rate, 2) = }")
-    print(f"{int(gamma_rate, 2) * int(epsilon_rate, 2) = }")
+    print(f"{oxygen_gen_rating = }")
+    print(f"{int(oxygen_gen_rating, 2) = }")
+    print(f"{co2_scrubber_rating = }")
+    print(f"{int(co2_scrubber_rating, 2) = }")
+    print(f"{life_support_rating = }")
 
 
 if __name__ == "__main__":
