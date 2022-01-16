@@ -153,19 +153,26 @@ def _board_check(hits: Hits) -> bool:
     return False
 
 
-def _check_for_winner(boards: Boards) -> int | None:
-    """Checks for a winner with the given board."""
+def _check_for_winners(boards: Boards) -> list[int]:
+    """Checks for the winners in a given round.
+
+    Args:
+        boards (Boards): Boards to check.
+
+    Returns:
+        list[int]: List of indexes of boards that won the given round.
+    """
     print("Checking for a winner...")
+    winners: list[int] = []
+
     for idx, board in enumerate(boards):
         hits = cast(Hits, board["hits"])
 
         win: bool = _board_check(hits)
-
         if win:
-            return idx
+            winners.append(idx)
 
-    print("No winners found")
-    return None
+    return winners
 
 
 def _score_board(board: Board, move: int) -> int:
@@ -187,18 +194,49 @@ def _score_board(board: Board, move: int) -> int:
 
 def play_bingo(boards: Boards, moves: Moves) -> None:
     """Plays bingo with the given boards and the list of moves."""
+    continue_checking = True
     for idx, move in enumerate(moves):
-        print(f"Round: {idx}")
-        _find_board_hits(move, boards)
-        winner: int | None = _check_for_winner(boards)
-
-        if winner != None:
-            print(f"The winner is board #{winner + 1}!")
-            score: int = _score_board(boards[winner], move)
-            print(f"Their score is: {score}")
+        if (
+            not continue_checking
+        ):  # Use this to break out when we've gotten to the last winner.
             break
 
-        print(f"Unable to find winner for round {idx}.")
+        print(f"Round: {idx}")
+        _find_board_hits(move, boards)
+        winners: list[int] = _check_for_winners(boards)
+        print(f"{winners = }")
+
+        # Figure out who the last winner is
+        if len(winners) != 0:
+            prev_winner: int | None = None
+            iterations: int = 0
+            for winner in winners:
+                if len(boards) == 1:
+                    print(f"The last winner is board #{winner + 1}!")
+                    print(f"Their score is: {_score_board(boards[winner], move)}")
+
+                    # Stop processing.
+                    continue_checking = False
+                    break
+                else:
+                    print("We don't care about this winner because it's not the last.")
+                    print(
+                        f"ELIMINATING: {winner} (note, this is the index of the OG list)"
+                    )
+
+                    # Need to make sure that we adjust index properly
+                    if prev_winner == None:
+                        prev_winner = winner
+                        del boards[winner]
+                    elif winner > prev_winner:
+                        iterations += 1
+                        del boards[winner - iterations]
+                    elif winner < prev_winner:
+                        iterations -= 1
+                        del boards[winner + iterations]
+
+        if continue_checking:
+            print(f"Unable to find winner for round {idx}.")
 
 
 def main() -> None:
